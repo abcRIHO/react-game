@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { PureComponent, memo } from 'react';
 
-class RenderTest extends Component {
+class RenderTest extends PureComponent {
     state = { 
         counter: 0,
     };

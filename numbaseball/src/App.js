@@ -5,7 +5,7 @@ import RenderTest from './lecture/RenderTest';
 const App = () => {
   return (
     <div>
-        <RenderTest />
+        <NumberBaseball />
     </div>
   )
 }

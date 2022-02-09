@@ -37,11 +37,8 @@ const NumberBaseball = () => {
             let strike = 0;
             let ball = 0;
             if (tries.length >= 9) { // 10번 이상 틀렸을 때
-                this.setState({
-                    result: `10번 이상 실패! 답은 ${answer.join(',')}이었습니다.`
-                });
                 
-                setResult();
+                setResult(`10번 이상 실패! 답은 ${answer.join(',')}이었습니다.`);
 
                 alert('신규 게임 시작')
                 setVaule('');
