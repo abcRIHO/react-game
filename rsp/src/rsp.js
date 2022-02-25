@@ -26,12 +26,13 @@ const RSP = () => {
 
   useEffect(() => {
     // compoentDidMount, componentDidUpdate 역할 (1:1 대응은 X)
-    interval.current = setInterval(changeHand, 500);
+    interval.current = setInterval(changeHand, 100);
     return () => {
       // componentWillUnmount 역할
       clearInterval(interval.current);
     }
-  }, [imgCoord]); // useEffect를 실행하고 싶은 state
+  }, [imgCoord]); // useEffect를 실행하고 싶은 state. 여러 개 참조도 가능
+  // imgCoord가 바뀔 때마다 useEffect가 계속 실행됨
 
   const changeHand = () => {
       if (imgCoord === rspCoords.바위) {
