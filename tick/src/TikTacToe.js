@@ -1,19 +1,21 @@
-import React, { useState, useReducer, useCallback } from 'react';
+import React, { useState, useReducer, useCallback, useEffect } from 'react';
 import Table from './table';
 
 const initialState = {
     winner: '',
-    turn: '0',
+    turn: 'O',
     tableData: [
         ['', '', ''],
         ['', '', ''],
         ['', '', ''],
       ],
+      recentCell: [-1, -1], // 최근 눌렀던 셀 기억
 }
 
 export const SET_WINNER = 'SET_WINNER';
 export const CLICK_CELL = 'CLICK_CELL';
 export const CHANGE_TURN = 'CHANGE_TURN';
+export const RESET_GAME = 'RESET_GAME';
 // action의 이름은 변수로 선언
 
 const reducer = (state, action) => {
@@ -39,6 +41,7 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 tableData,
+                recentCell: [action.row, action.cell], // 최근 클릭 셀 기억
             }
 
         case CHANGE_TURN: {
@@ -48,8 +51,19 @@ const reducer = (state, action) => {
             }
         }
 
-
+        case RESET_GAME: {
+            return {
+                ...state,
+                turn: 'O',
+                tableData: [
+                    ['', '', ''],
+                    ['', '', ''],
+                    ['', '', ''],
+                  ],
+            };
+        }
         default:
+            return state;
     }
 };
 
@@ -57,12 +71,55 @@ const TikTacToe = () => {
     // state는 부모인 TikTacToe에서 관리
     // useReducer -> state를 관리해주는 Hooks
     const [state, dispatch] = useReducer(reducer, initialState);
+    const { tableData, turn, winner, recentCell } = state;
 
     const onClickTable = useCallback(() => {
         // 컴포넌트에 들어가는 함수들은 useCallback
         dispatch({ type: SET_WINNER, winner: '0' }) 
         // dispatch 내부에 들어가면 action 객체
     }, []);
+
+    useEffect(() => {  
+        let win = false;
+        const [row, cell] = recentCell;
+        if (row < 0) {
+            return;
+        }
+        if (tableData[row][0] === turn && tableData[row][1] === turn && tableData[row][2] === turn) {
+            win = true; // 가로줄 검사
+        }
+        if (tableData[0][cell] === turn && tableData[1][cell] === turn && tableData[2][cell] === turn) {
+            win = true; // 세로줄 검사 
+        }
+        if (tableData[0][0] === turn && tableData[1][1] === turn && tableData[2][2] === turn) {
+            win = true; // 대각선 검사 
+        }
+        if (tableData[0][2] === turn && tableData[1][1] === turn && tableData[2][0] === turn) {
+            win = true; // 대각선 검사
+        }
+
+        if (win) { // 승리 시
+            dispatch({ type: SET_WINNER, winner: turn });
+            dispatch({ type: RESET_GAME });
+        } else {
+            // 무승부 검사
+            let all = true; // all이 true면 무승부라는 뜻 
+            tableData.forEach((row) => {
+                row.forEach((cell) => {
+                    if (!cell) {
+                        all = false;
+                        // 하나라도 안 찬 칸이 있다면 무승부가 아님
+                    }
+                })
+            });
+            if (all) {
+                dispatch({ type: RESET_GAME });
+            } else {
+                // 무승부가 아니라면 턴을 넘김
+                dispatch({ type: CHANGE_TURN });
+            }
+        }
+    }, [tableData]);
 
     return (
         <>

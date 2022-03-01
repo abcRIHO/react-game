@@ -5,10 +5,14 @@ import { CLICK_CELL, CHANGE_TURN } from './TikTacToe';
 const Td = ({ rowIndex, cellIndex, dispatch, cellData }) => {
     const onClickTd = useCallback(() => {
         console.log(rowIndex, cellIndex);
+        if(cellData) {
+            return; // 한 번 클릭한 cell은 변하지 않음
+        }
         dispatch({ type: CLICK_CELL, row: rowIndex, cell: cellIndex });
-        dispatch({ type: CHANGE_TURN });
+        
         // 칸을 클릭하면 턴을 넘김
-    }, [])
+        // useReducer는 state가 비동기적으로 변화
+    }, [cellData])
 
     return (
         <td onClick={onClickTd}>{cellData}</td>
