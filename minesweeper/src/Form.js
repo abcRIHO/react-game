@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useContext } from "react";
+import { memo } from "react/cjs/react.production.min";
 import { START_GAME, TableContext } from "./minesweeper";
 
-const Form = () => {
+const Form = memo(() => {
     const [row, setRow] = useState(10);
     const [cell, setCell] = useState(10);
     const [mine, setMine] = useState(20);
@@ -19,7 +20,7 @@ const Form = () => {
         setMine(e.target.value);
     }, []);
 
-    const onClickBtn = useCallback((e) => {
+    const onClickBtn = useCallback(() => {
         // Context API 적용
         dispatch({ type: START_GAME, row, cell, mine }); 
     }, [row, cell, mine]);
@@ -32,6 +33,6 @@ const Form = () => {
             <button onClick={onClickBtn}>시작</button>
         </div>
     );
-};
+});
 
 export default Form;
